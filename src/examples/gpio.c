@@ -3,7 +3,7 @@
 #include <windows.h>
 #define SLEEP Sleep
 #define SLEEP_FACTOR 1000
-#elif
+#else
 #include <stdlib.h>
 #define SLEEP sleep
 #define SLEEP_FACTOR 1
