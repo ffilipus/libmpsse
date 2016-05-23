@@ -1,12 +1,10 @@
 #include <stdio.h>
 #ifdef _WIN32
 #include <windows.h>
-#define SLEEP Sleep
-#define SLEEP_FACTOR 1000
+#define SLEEP(sec) Sleep(sec*1000)
 #else
 #include <stdlib.h>
-#define SLEEP sleep
-#define SLEEP_FACTOR 1
+#define SLEEP(sec) sleep(sec)
 #endif
 #include <mpsse.h>
 
@@ -23,11 +21,11 @@ int main(void)
 		{
 			PinHigh(io, 0);
 			printf("Pin 0 is: %d\n", PinState(io, 0, -1));
-			SLEEP(1*SLEEP_FACTOR);
+			SLEEP(1);
 			
 			PinLow(io, 0);
 			printf("Pin 0 is: %d\n", PinState(io, 0, -1));
-			SLEEP(1*SLEEP_FACTOR);
+			SLEEP(1);
 		}
 
 		retval = EXIT_SUCCESS;
