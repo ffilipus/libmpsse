@@ -72,7 +72,7 @@ int main(void)
         long b5 = x1 + x2; 
         long t = ((b5 + 8)>>4);  
 
-        printf("t %d\n", t);
+        printf("t %.1f\u2103\n", (float)t/10.0);
     }
 	else
 	{
