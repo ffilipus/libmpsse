@@ -19,10 +19,10 @@ int main(void)
 		printf("%s initialized at %dHz (I2C)\n", GetDescription(bmp180), GetClock(bmp180));
 		/* Write the EEPROM start address */	
 		Start(bmp180);
-        Write(bmp180, WCMD, sizeof(WCMD) - 1);
+        Write(bmp180,(char*)WCMD, sizeof(WCMD) - 1);
         Stop(bmp180);
         Start(bmp180);
-        Write(bmp180, RCMD, sizeof(RCMD) - 1);
+        Write(bmp180,(char*)RCMD, sizeof(RCMD) - 1);
         if(GetAck(bmp180) == ACK) {
 			printf("Write OK\n");
 			data = Read(bmp180, SIZE);
