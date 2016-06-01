@@ -4,14 +4,10 @@
 
 #include "i2cbmp180.hpp"
 
-#define WCMD	"\xEE\xAA"	// Write start address command
-#define RCMD	"\xEF"		// Read command
-#define SIZE    22
-
 int main(void)
 {
 	int retval = EXIT_FAILURE;
-	char *data = NULL;
+    char *data = NULL;
 	struct mpsse_context *bmp180 = NULL;
 
 	if((bmp180 = MPSSE(I2C, FOUR_HUNDRED_KHZ, MSB)) != NULL && bmp180->open)
@@ -19,10 +15,10 @@ int main(void)
 		printf("%s initialized at %dHz (I2C)\n", GetDescription(bmp180), GetClock(bmp180));
 		/* Write the EEPROM start address */	
 		Start(bmp180);
-        Write(bmp180,(char*)WCMD, sizeof(WCMD) - 1);
+        Write(bmp180, (char*)WCMD, sizeof(WCMD) - 1);
         Stop(bmp180);
         Start(bmp180);
-        Write(bmp180,(char*)RCMD, sizeof(RCMD) - 1);
+        Write(bmp180, (char*)RCMD, sizeof(RCMD) - 1);
         if(GetAck(bmp180) == ACK) {
 			printf("Write OK\n");
 			data = Read(bmp180, SIZE);
@@ -55,7 +51,28 @@ int main(void)
         short md = extractS(data, 20);
 	    printf("ac1 %d ac2 %d ac3 %d\n", ac1, ac2, ac3);
 	    printf("ac4 %d ac5 %d ac6 %d\n", ac4, ac5, ac6);
-	    printf("b1 %d b2 %d mb %d mc %d md %d", b1, b2, mb, mc, md);
+	    printf("b1 %d b2 %d mb %d mc %d md %d\n", b1, b2, mb, mc, md);
+       
+        Start(bmp180);
+        Write(bmp180, (char*)RUT, sizeof(RUT) - 1);
+        Stop(bmp180);
+        usleep(5000);
+        Start(bmp180);
+        Write(bmp180, (char*)RUTR, sizeof(RUTR) - 1);
+        Stop(bmp180);
+        Start(bmp180);
+        Write(bmp180, (char*)RCMD, sizeof(RCMD) - 1);
+        data = Read(bmp180, 2);
+        Stop(bmp180);
+        long ut = extractUS(data, 0);
+        printf("ut %d\n", ut);
+
+        long x1 = (((long)ut - (long)ac6)*(long)ac5) >> 15;
+        long x2 = ((long)mc << 11)/(x1 + md);  
+        long b5 = x1 + x2; 
+        long t = ((b5 + 8)>>4);  
+
+        printf("t %d\n", t);
     }
 	else
 	{
